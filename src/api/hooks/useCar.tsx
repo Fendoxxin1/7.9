@@ -1,3 +1,4 @@
+// useCar.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "..";
 import type { ICar } from "../../types";
@@ -7,19 +8,13 @@ export const car = "car";
 export const useCar = () => {
   const client = useQueryClient();
 
-  const getCars = () =>
-    useQuery({
-      queryKey: [car],
-      queryFn: () => api.get("car").then((res) => res.data.data),
-      gcTime: 1000 * 60 * 10,
-      staleTime: 1000 * 60,
-    });
-
-  const getCarById = (id: number) =>
-    useQuery({
-      queryKey: [car],
-      queryFn: () => api.get(`car/${id}`).then((res) => res.data),
-    });
+  // bevosita hookni qaytaramiz
+  const getCars = useQuery({
+    queryKey: [car],
+    queryFn: () => api.get("car").then((res) => res.data), // bu yerda res.data.data bo‘lsa ham yozamiz
+    gcTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60,
+  });
 
   const createCar = useMutation({
     mutationFn: (data: ICar | null) => api.post("car", data),
@@ -39,7 +34,6 @@ export const useCar = () => {
 
   return {
     getCars,
-    getCarById,
     createCar,
     updateCar,
     deleteCar,

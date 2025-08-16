@@ -6,7 +6,7 @@ import type { ICar } from "../../types";
 const Car: React.FC = () => {
   const navigate = useNavigate();
   const { getCars, deleteCar } = useCar();
-  const { data: cars, isLoading } = getCars();
+  const { data: cars, isLoading } = getCars;
 
   const handleEdit = (car: ICar) => {
     navigate("/", { state: { editingCar: car } });
@@ -19,17 +19,17 @@ const Car: React.FC = () => {
           Avtomobillar ro'yxati
         </h1>
 
-        <div className="overflow-x-auto rounded-xl shadow-md border border-green-200">
+        <div className="overflow-x-auto rounded-xl shadow-md border border-green-200 bg-white">
           <table className="w-full text-left border-collapse">
             <thead className="bg-green-600 text-white">
               <tr>
                 <th className="p-3">#</th>
                 <th className="p-3">Nomi</th>
-                <th className="p-3">Narxi ($)</th>
-                <th className="p-3">Brendi</th>
-                <th className="p-3">Rangi</th>
+                <th className="p-3">Narxi</th>
+                <th className="p-3">Brend</th>
+                <th className="p-3">Rang</th>
                 <th className="p-3">Sana</th>
-                <th className="p-3">Quvvati (HP)</th>
+                <th className="p-3">Quvvat</th>
                 <th className="p-3 text-center">Amallar</th>
               </tr>
             </thead>
@@ -43,7 +43,7 @@ const Car: React.FC = () => {
               )}
 
               {!isLoading &&
-                cars?.map((car: ICar, idx: number) => (
+                cars?.data?.map((car: ICar, idx: number) => (
                   <tr
                     key={car.id}
                     className={`border-t border-green-200 ${
@@ -66,9 +66,11 @@ const Car: React.FC = () => {
                           Tahrirlash
                         </button>
                         <button
-                          onClick={() =>
-                            car.id && deleteCar.mutate(Number(car.id))
-                          }
+                          onClick={() => {
+                            if (typeof car.id === "number") {
+                              deleteCar.mutate(car.id);
+                            }
+                          }}
                           className="px-3 py-1 rounded-lg text-sm bg-red-500 text-white hover:bg-red-600"
                         >
                           O'chirish
@@ -78,7 +80,7 @@ const Car: React.FC = () => {
                   </tr>
                 ))}
 
-              {!isLoading && (!cars || cars.length === 0) && (
+              {!isLoading && cars?.data.length === 0 && (
                 <tr>
                   <td
                     colSpan={8}
